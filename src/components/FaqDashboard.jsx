@@ -21,18 +21,17 @@ const getDefaultDateRange = () => {
 /** 카테고리명 가나다순 (한글·영문 혼합 시 locale 기준) */
 const sortCategoriesKo = (a, b) => a.localeCompare(b, "ko");
 
-// 클릭 데이터(별도 소스): 날짜 / 카테고리 / label / path / 이벤트수 (필터는 FAQ stats와 동일하게 날짜·카테고리 적용)
+// 클릭 데이터(별도 소스): statsRows의 노출 버튼과 동일한 날짜·카테고리·Label·PATH만 사용 (데모 정합성)
 const BUTTON_CLICK_SAMPLES = [
-  { date: "2026-03-15", category: "유선", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 12 },
-  { date: "2026-03-15", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 9 },
-  { date: "2026-03-16", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 15 },
-  { date: "2026-03-16", category: "안내", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 7 },
-  { date: "2026-03-17", category: "요금제문의", label: "로밍 안내", path: "tworld.co.kr/roaming", eventCount: 22 },
-  { date: "2026-03-18", category: "요금제문의", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 18 },
-  { date: "2026-03-19", category: "안내", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 5 },
-  { date: "2026-03-20", category: "안내", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 11 },
-  { date: "2026-03-21", category: "로밍", label: "로밍 안내", path: "tworld.co.kr/roaming", eventCount: 14 },
-  { date: "2026-03-22", category: "요금제문의", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 3 },
+  { date: "2026-03-12", category: "유선", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 12 },
+  { date: "2026-03-12", category: "안내", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 9 },
+  { date: "2026-03-12", category: "안내", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 6 },
+  { date: "2026-03-10", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 15 },
+  { date: "2026-03-14", category: "요금제문의", label: "로밍 안내", path: "tworld.co.kr/roaming", eventCount: 22 },
+  { date: "2026-03-14", category: "요금제문의", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 18 },
+  { date: "2026-03-16", category: "안내", label: "이메일 상담 접수 바로가기", path: "tworld.co.kr/aaa", eventCount: 8 },
+  { date: "2026-03-16", category: "안내", label: "상담사 연결하기", path: "tel:114", eventCount: 6 },
+  { date: "2026-03-20", category: "로밍", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 11 },
 ];
 
 export default function FaqDashboard() {
@@ -79,7 +78,7 @@ export default function FaqDashboard() {
   // 버튼 식별자(key)는 기본적으로 `path`를 우선 사용합니다.
   const statsRows = [
     {
-      date: "2026-03-08",
+      date: "2026-03-12",
       category: "유선",
       intentName: "T 통화중대기",
       intentId: "scint00000001",
@@ -92,7 +91,7 @@ export default function FaqDashboard() {
       count: 50,
     },
     {
-      date: "2026-03-08",
+      date: "2026-03-12",
       category: "안내",
       intentName: "5G커버리지",
       intentId: "scint00000002",
@@ -356,8 +355,8 @@ export default function FaqDashboard() {
       category: "로밍",
       intentName: "로밍요금제변경문의",
       intentId: "scint06000006",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
+      exposedButton1Name: "요금제 확인",
+      exposedButton1Path: "tworld.co.kr/plan",
       exposedButton2Name: null,
       exposedButton2Path: null,
       exposedButton3Name: null,
