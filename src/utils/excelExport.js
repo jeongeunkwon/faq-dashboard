@@ -54,7 +54,6 @@ export function exportClickExcel({ clickRows, filenamePrefix = "faq_clicks" }) {
   const wb = XLSX.utils.book_new();
   const sheet = XLSX.utils.json_to_sheet(
     clickRows.map((c) => ({
-      카테고리: c.category,
       Label: c.label,
       PATH: c.path,
       노출: c.exposedEvents,

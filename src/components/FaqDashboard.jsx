@@ -21,17 +21,17 @@ const getDefaultDateRange = () => {
 /** 카테고리명 가나다순 (한글·영문 혼합 시 locale 기준) */
 const sortCategoriesKo = (a, b) => a.localeCompare(b, "ko");
 
-// 클릭 데이터(별도 소스): statsRows의 노출 버튼과 동일한 날짜·카테고리·Label·PATH만 사용 (데모 정합성)
+// 클릭 데이터(별도 소스): 날짜 / Label / PATH / 이벤트수
 const BUTTON_CLICK_SAMPLES = [
-  { date: "2026-03-12", category: "유선", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 12 },
-  { date: "2026-03-12", category: "안내", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 9 },
-  { date: "2026-03-12", category: "안내", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 6 },
-  { date: "2026-03-10", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 15 },
-  { date: "2026-03-14", category: "요금제문의", label: "로밍 안내", path: "tworld.co.kr/roaming", eventCount: 22 },
-  { date: "2026-03-14", category: "요금제문의", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 18 },
-  { date: "2026-03-16", category: "안내", label: "이메일 상담 접수 바로가기", path: "tworld.co.kr/aaa", eventCount: 8 },
-  { date: "2026-03-16", category: "안내", label: "상담사 연결하기", path: "tel:114", eventCount: 6 },
-  { date: "2026-03-20", category: "로밍", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 11 },
+  { date: "2026-03-12", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 12 },
+  { date: "2026-03-12", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 9 },
+  { date: "2026-03-12", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 6 },
+  { date: "2026-03-10", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 15 },
+  { date: "2026-03-14", label: "로밍 안내", path: "tworld.co.kr/roaming", eventCount: 22 },
+  { date: "2026-03-14", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 18 },
+  { date: "2026-03-16", label: "이메일 상담 접수 바로가기", path: "tworld.co.kr/aaa", eventCount: 8 },
+  { date: "2026-03-16", label: "상담사 연결하기", path: "tel:114", eventCount: 6 },
+  { date: "2026-03-20", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 11 },
 ];
 
 export default function FaqDashboard() {
@@ -484,14 +484,8 @@ export default function FaqDashboard() {
   }));
 
   const filteredButtonClicks = useMemo(
-    () =>
-      BUTTON_CLICK_SAMPLES.filter(
-        (c) =>
-          isInRange(c.date) &&
-          selectedCategories.length > 0 &&
-          selectedCategories.includes(c.category)
-      ),
-    [startDate, endDate, selectedCategories]
+    () => BUTTON_CLICK_SAMPLES.filter((c) => isInRange(c.date)),
+    [startDate, endDate]
   );
 
   const totalButtonClickEvents = filteredButtonClicks.reduce((sum, c) => sum + c.eventCount, 0);
@@ -586,17 +580,16 @@ export default function FaqDashboard() {
   };
 
   const handleDownloadClicks = () => {
-    const exposureByCategoryButtonMap = new Map();
+    const exposureByButtonMap = new Map();
     for (const row of filteredStatsRows) {
       const buttons = getUniqueButtonsFromRow(row);
       for (const btn of buttons) {
-        const key = `${row.category}|${btn.key}`;
-        const prev = exposureByCategoryButtonMap.get(key);
+        const key = btn.key;
+        const prev = exposureByButtonMap.get(key);
         if (prev) {
-          exposureByCategoryButtonMap.set(key, { ...prev, exposedEvents: prev.exposedEvents + row.count });
+          exposureByButtonMap.set(key, { ...prev, exposedEvents: prev.exposedEvents + row.count });
         } else {
-          exposureByCategoryButtonMap.set(key, {
-            category: row.category,
+          exposureByButtonMap.set(key, {
             label: btn.label,
             path: btn.path,
             exposedEvents: row.count,
@@ -605,17 +598,16 @@ export default function FaqDashboard() {
       }
     }
 
-    const clickByCategoryButtonMap = new Map();
+    const clickByButtonMap = new Map();
     for (const c of filteredButtonClicks) {
       const parts = normalizeButtonParts(c.label, c.path);
       if (!parts) continue;
-      const key = `${c.category}|${parts.key}`;
-      const prev = clickByCategoryButtonMap.get(key);
+      const key = parts.key;
+      const prev = clickByButtonMap.get(key);
       if (prev) {
-        clickByCategoryButtonMap.set(key, { ...prev, clickedEvents: prev.clickedEvents + c.eventCount });
+        clickByButtonMap.set(key, { ...prev, clickedEvents: prev.clickedEvents + c.eventCount });
       } else {
-        clickByCategoryButtonMap.set(key, {
-          category: c.category,
+        clickByButtonMap.set(key, {
           label: parts.label,
           path: parts.path,
           clickedEvents: c.eventCount,
@@ -624,17 +616,16 @@ export default function FaqDashboard() {
     }
 
     const allKeys = new Set([
-      ...exposureByCategoryButtonMap.keys(),
-      ...clickByCategoryButtonMap.keys(),
+      ...exposureByButtonMap.keys(),
+      ...clickByButtonMap.keys(),
     ]);
     const clickRows = Array.from(allKeys)
       .map((key) => {
-        const exposure = exposureByCategoryButtonMap.get(key);
-        const click = clickByCategoryButtonMap.get(key);
+        const exposure = exposureByButtonMap.get(key);
+        const click = clickByButtonMap.get(key);
         const exposedEvents = exposure?.exposedEvents ?? 0;
         const clickedEvents = click?.clickedEvents ?? 0;
         return {
-          category: exposure?.category ?? click?.category ?? "",
           label: exposure?.label ?? click?.label ?? "",
           path: exposure?.path ?? click?.path ?? "",
           exposedEvents,
@@ -643,14 +634,12 @@ export default function FaqDashboard() {
         };
       })
       .sort((a, b) => {
-        const cat = a.category.localeCompare(b.category, "ko");
-        if (cat !== 0) return cat;
         if (b.clickedEvents !== a.clickedEvents) return b.clickedEvents - a.clickedEvents;
         return b.exposedEvents - a.exposedEvents;
       });
 
     if (clickRows.length === 0) {
-      window.alert("다운로드할 클릭 데이터가 없습니다. 날짜·카테고리를 확인해 주세요.");
+      window.alert("다운로드할 클릭 데이터가 없습니다. 날짜 범위를 확인해 주세요.");
       return;
     }
     exportClickExcel({
@@ -875,7 +864,7 @@ export default function FaqDashboard() {
           2. 버튼
         </button>
         <span style={{ fontSize: 11, color: "#64748b" }}>
-          현재 날짜·카테고리 필터가 적용된 결과입니다. 엑셀 다운로드 시에는 건수 제한 없이 전체 데이터 다운로드되게 해주세요. 
+          Category+Intent는 날짜·카테고리 필터, 버튼은 날짜 필터만 적용됩니다. 건수 제한 없이 전체 데이터 다운로드되게 해주세요.
         </span>
       </div>
 
