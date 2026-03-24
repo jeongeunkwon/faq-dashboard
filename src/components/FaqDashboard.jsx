@@ -875,7 +875,7 @@ export default function FaqDashboard() {
           2. 버튼
         </button>
         <span style={{ fontSize: 11, color: "#64748b" }}>
-          현재 날짜·카테고리 필터가 적용된 결과입니다.
+          현재 날짜·카테고리 필터가 적용된 결과입니다. 엑셀 다운로드 시에는 건수 제한 없이 전체 데이터 다운로드되게 해주세요. 
         </span>
       </div>
 
