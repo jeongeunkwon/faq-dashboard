@@ -23,10 +23,10 @@ const sortCategoriesKo = (a, b) => a.localeCompare(b, "ko");
 
 // 클릭 데이터(별도 소스): 날짜 / 카테고리 / label / path / 이벤트수 (필터는 FAQ stats와 동일하게 날짜·카테고리 적용)
 const BUTTON_CLICK_SAMPLES = [
-  { date: "2026-03-10", category: "유선", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 12 },
-  { date: "2026-03-10", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 9 },
-  { date: "2026-03-15", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 15 },
-  { date: "2026-03-15", category: "안내", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 7 },
+  { date: "2026-03-15", category: "유선", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 12 },
+  { date: "2026-03-15", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 9 },
+  { date: "2026-03-16", category: "가입변경신청", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 15 },
+  { date: "2026-03-16", category: "안내", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 7 },
   { date: "2026-03-17", category: "요금제문의", label: "로밍 안내", path: "tworld.co.kr/roaming", eventCount: 22 },
   { date: "2026-03-18", category: "요금제문의", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 18 },
   { date: "2026-03-19", category: "안내", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 5 },
