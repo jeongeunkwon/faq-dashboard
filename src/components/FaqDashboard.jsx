@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { exportCategoryIntentExcel, exportClickExcel } from "../utils/excelExport.js";
+import { loadDashboardCsvData } from "../utils/csvData.js";
 
 const formatDate = (date) => {
   const year = date.getFullYear();
@@ -21,23 +22,34 @@ const getDefaultDateRange = () => {
 /** 카테고리명 가나다순 (한글·영문 혼합 시 locale 기준) */
 const sortCategoriesKo = (a, b) => a.localeCompare(b, "ko");
 
-// 클릭 데이터(별도 소스): 날짜 / Label / PATH / 이벤트수
-const BUTTON_CLICK_SAMPLES = [
-  { date: "2026-03-12", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 12 },
-  { date: "2026-03-12", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 9 },
-  { date: "2026-03-12", label: "매장찾기 바로가기", path: "tworld.co.kr/...", eventCount: 6 },
-  { date: "2026-03-10", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 15 },
-  { date: "2026-03-14", label: "로밍 안내", path: "tworld.co.kr/roaming", eventCount: 22 },
-  { date: "2026-03-14", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 18 },
-  { date: "2026-03-16", label: "이메일 상담 접수 바로가기", path: "tworld.co.kr/aaa", eventCount: 8 },
-  { date: "2026-03-16", label: "상담사 연결하기", path: "tel:114", eventCount: 6 },
-  { date: "2026-03-20", label: "요금제 확인", path: "tworld.co.kr/plan", eventCount: 11 },
-];
-
 export default function FaqDashboard() {
   const defaultRange = getDefaultDateRange();
   const [startDate, setStartDate] = useState(defaultRange.startDate);
   const [endDate, setEndDate] = useState(defaultRange.endDate);
+
+  const [statsRows, setStatsRows] = useState([]);
+  const [buttonClickRows, setButtonClickRows] = useState([]);
+  const [dataStatus, setDataStatus] = useState("loading");
+  const [dataError, setDataError] = useState(null);
+
+  const reloadData = useCallback(() => {
+    setDataStatus("loading");
+    setDataError(null);
+    loadDashboardCsvData()
+      .then(({ statsRows: s, buttonClickRows: b }) => {
+        setStatsRows(s);
+        setButtonClickRows(b);
+        setDataStatus("ok");
+      })
+      .catch((e) => {
+        setDataError(e?.message ?? String(e));
+        setDataStatus("error");
+      });
+  }, []);
+
+  useEffect(() => {
+    reloadData();
+  }, [reloadData]);
 
   const applyPreset = (preset) => {
     const today = new Date();
@@ -64,332 +76,7 @@ export default function FaqDashboard() {
     }
   };
 
-  // 단일 입력 데이터(예시)
-  // 사용자가 활용할 데이터 포맷:
-  // - date
-  // - category
-  // - intentName
-  // - intentId
-  // - exposedButton1Name / exposedButton1Path
-  // - exposedButton2Name / exposedButton2Path
-  // - exposedButton3Name / exposedButton3Path
-  // - count
-  //
-  // 버튼 식별자(key)는 기본적으로 `path`를 우선 사용합니다.
-  const statsRows = [
-    {
-      date: "2026-03-12",
-      category: "유선",
-      intentName: "T 통화중대기",
-      intentId: "scint00000001",
-      exposedButton1Name: "매장찾기 바로가기",
-      exposedButton1Path: "tworld.co.kr/...",
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 50,
-    },
-    {
-      date: "2026-03-12",
-      category: "안내",
-      intentName: "5G커버리지",
-      intentId: "scint00000002",
-      exposedButton1Name: "요금제 확인",
-      exposedButton1Path: "tworld.co.kr/plan",
-      exposedButton2Name: "매장찾기 바로가기",
-      exposedButton2Path: "tworld.co.kr/...",
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 30,
-    },
-    {
-      date: "2026-03-10",
-      category: "가입변경신청",
-      intentName: "명의변경",
-      intentId: "scint00000003",
-      exposedButton1Name: "요금제 확인",
-      exposedButton1Path: "tworld.co.kr/plan",
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 40,
-    },
-    {
-      date: "2026-03-11",
-      category: "결합문의",
-      intentName: "T가족모아데이터공유방법",
-      intentId: "scint00000004",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 19,
-    },
-    {
-      date: "2026-03-13",
-      category: "구독상품",
-      intentName: "구독구독",
-      intentId: "scint00000100",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 19,
-    },
-    {
-      date: "2026-03-14",
-      category: "요금제문의",
-      intentName: "0틴5G요금제",
-      intentId: "scint00000005",
-      exposedButton1Name: "로밍 안내",
-      exposedButton1Path: "tworld.co.kr/roaming",
-      exposedButton2Name: "요금제 확인",
-      exposedButton2Path: "tworld.co.kr/plan",
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 60,
-    },
-    {
-      date: "2026-03-17",
-      category: "Tworld",
-      intentName: "Tworld에서처리가능한업무",
-      intentId: "scint00003004",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 87,
-    },
-    {
-      date: "2026-03-22",
-      category: "서비스이용문의",
-      intentName: "플로앤데이터사용방법",
-      intentId: "scint00050004",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 123,
-    },
-    {
-      date: "2026-03-16",
-      category: "프로모션",
-      intentName: "26년3월프로모션",
-      intentId: "scint00000405",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 90,
-    },
-    {
-      date: "2026-03-19",
-      category: "플랫폼",
-      intentName: "플랫폼1234",
-      intentId: "scint00005004",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 55,
-    },
-    {
-      date: "2026-03-15",
-      category: "통화품질",
-      intentName: "휴대폰5G데이터접속불가조치방법",
-      intentId: "scint00000006",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 32,
-    },
-    {
-      date: "2026-03-18",
-      category: "법인",
-      intentName: "법인법인법인",
-      intentId: "scint00008006",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 39,
-    },
-    {
-      date: "2026-03-16",
-      category: "안내",
-      intentName: "T다이렉트샵상담센터",
-      intentId: "scint00000007",
-      exposedButton1Name: "이메일 상담 접수 바로가기",
-      exposedButton1Path: "tworld.co.kr/aaa",
-      exposedButton2Name: "상담사 연결하기",
-      exposedButton2Path: "tel:114",
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 30,
-    },
-    {
-      date: "2026-03-17",
-      category: "고객우대혜택",
-      intentName: "specialT",
-      intentId: "scint00000008",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 8,
-    },
-    {
-      date: "2026-03-24",
-      category: "고객정보조회",
-      intentName: "고객정보조회1234",
-      intentId: "scint00000204",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 77,
-    },
-    {
-      date: "2026-03-23",
-      category: "약정할인제도",
-      intentName: "선택약정가입방법",
-      intentId: "scint00600004",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 101,
-    },
-    {
-      date: "2026-03-18",
-      category: "로밍",
-      intentName: "로밍완전차단",
-      intentId: "scint00000009",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 40,
-    },
-    {
-      date: "2026-03-11",
-      category: "통화품질",
-      intentName: "통화음질불량조치방법",
-      intentId: "scint00001234",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 55,
-    },
-    {
-      date: "2026-03-18",
-      category: "서비스이용문의",
-      intentName: "휴대폰보험문의",
-      intentId: "scint01000006",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 99,
-    },
-    {
-      date: "2026-03-19",
-      category: "약정할인제도",
-      intentName: "약정가입방법",
-      intentId: "scint02000006",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 88,
-    },
-    {
-      date: "2026-03-20",
-      category: "통화품질",
-      intentName: "통화품질1234",
-      intentId: "scint07000006",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 67,
-    },
-    {
-      date: "2026-03-20",
-      category: "로밍",
-      intentName: "로밍요금제변경문의",
-      intentId: "scint06000006",
-      exposedButton1Name: "요금제 확인",
-      exposedButton1Path: "tworld.co.kr/plan",
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 55,
-    },
-    {
-      date: "2026-03-19",
-      category: "법인",
-      intentName: "법인세신고용서류",
-      intentId: "scint00030006",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 144,
-    },
-    {
-      date: "2026-03-19",
-      category: "요금관련문의",
-      intentName: "타인요금즉시납부방법",
-      intentId: "scint00000010",
-      exposedButton1Name: null,
-      exposedButton1Path: null,
-      exposedButton2Name: null,
-      exposedButton2Path: null,
-      exposedButton3Name: null,
-      exposedButton3Path: null,
-      count: 10,
-    },
-  ];
+  // FAQ·버튼 클릭 원시 데이터: public/data/faq_stats.csv, public/data/button_clicks.csv (또는 VITE_* 환경 변수로 URL 지정)
 
   const normalizeButtonParts = (name, path) => {
     if (!name && !path) return null;
@@ -419,9 +106,15 @@ export default function FaqDashboard() {
 
   const allCategories = [...new Set(statsRows.map((r) => r.category))].sort(sortCategoriesKo);
 
-  const [selectedCategories, setSelectedCategories] = useState(() =>
-    [...new Set(statsRows.map((r) => r.category))].sort(sortCategoriesKo)
-  );
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    if (statsRows.length === 0) return;
+    setSelectedCategories((prev) => {
+      if (prev.length > 0) return prev;
+      return [...new Set(statsRows.map((r) => r.category))].sort(sortCategoriesKo);
+    });
+  }, [statsRows]);
 
   const toggleCategory = (cat) => {
     setSelectedCategories((prev) =>
@@ -440,7 +133,7 @@ export default function FaqDashboard() {
           selectedCategories.length > 0 &&
           selectedCategories.includes(row.category)
       ),
-    [startDate, endDate, selectedCategories]
+    [startDate, endDate, selectedCategories, statsRows]
   );
 
   const totalFaqCount = filteredStatsRows.reduce((sum, row) => sum + row.count, 0);
@@ -484,8 +177,8 @@ export default function FaqDashboard() {
   }));
 
   const filteredButtonClicks = useMemo(
-    () => BUTTON_CLICK_SAMPLES.filter((c) => isInRange(c.date)),
-    [startDate, endDate]
+    () => buttonClickRows.filter((c) => isInRange(c.date)),
+    [startDate, endDate, buttonClickRows]
   );
 
   const totalButtonClickEvents = filteredButtonClicks.reduce((sum, c) => sum + c.eventCount, 0);
@@ -654,6 +347,58 @@ export default function FaqDashboard() {
         FAQ 통계 대시보드
       </h1>
 
+      {dataStatus === "loading" && (
+        <div
+          style={{
+            padding: 14,
+            marginBottom: 16,
+            background: "#fff",
+            borderRadius: 12,
+            border: "1px solid #eee",
+            fontSize: 14,
+            color: "#475569",
+          }}
+        >
+          CSV 데이터를 불러오는 중입니다…
+        </div>
+      )}
+
+      {dataStatus === "error" && (
+        <div
+          style={{
+            padding: 14,
+            marginBottom: 16,
+            background: "#fef2f2",
+            borderRadius: 12,
+            border: "1px solid #fecaca",
+            fontSize: 14,
+            color: "#991b1b",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <span>데이터를 불러오지 못했습니다: {dataError}</span>
+          <button
+            type="button"
+            onClick={reloadData}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 8,
+              border: "1px solid #991b1b",
+              background: "#fff",
+              cursor: "pointer",
+              fontSize: 13,
+            }}
+          >
+            다시 시도
+          </button>
+        </div>
+      )}
+
+      {dataStatus === "ok" && (
+      <>
       <div
         style={{
           display: "flex",
@@ -1036,6 +781,8 @@ export default function FaqDashboard() {
           </tbody>
         </table>
       </div>
+      </>
+      )}
     </div>
   );
 }
