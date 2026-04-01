@@ -26,16 +26,21 @@ export function mapFaqStatsRow(r) {
 }
 
 export function mapButtonClickRow(r) {
+  const nbsp = /\u00a0/g;
   return {
     date: String(r.date ?? "").trim(),
-    label: String(r.label ?? "").trim(),
-    path: String(r.path ?? "").trim(),
+    label: String(r.label ?? "").replace(nbsp, " ").trim(),
+    path: String(r.path ?? "").replace(nbsp, "").trim(),
     eventCount: Number(r.eventCount) || 0,
   };
 }
 
+function stripBom(s) {
+  return s.charCodeAt(0) === 0xfeff ? s.slice(1) : s;
+}
+
 function parseCsv(text, mapper) {
-  const parsed = Papa.parse(text, {
+  const parsed = Papa.parse(stripBom(text), {
     header: true,
     skipEmptyLines: "greedy",
   });

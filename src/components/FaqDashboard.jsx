@@ -746,40 +746,180 @@ export default function FaqDashboard() {
         <div style={{ fontSize: 11, color: "#64748b", marginBottom: 12 }}>
           클릭 수 기준 정렬 · 최대 {MAX_BUTTON_TABLE_ROWS}개까지 노출
         </div>
-        <table style={{ width: "100%", marginTop: 0 }}>
-          <thead>
-            <tr style={{ textAlign: "left", fontSize: 12 }}>
-              <th>Label</th>
-              <th>PATH</th>
-              <th>노출</th>
-              <th>클릭</th>
-              <th>CTR</th>
-            </tr>
-          </thead>
-          <tbody>
-            {buttonTableRows.map((item) => (
-              <tr key={`${item.label}-${item.path}`}>
-                <td>{item.label}</td>
-                <td>{item.path}</td>
-                <td>{item.exposedEvents.toLocaleString()}</td>
-                <td>{item.clickedEvents.toLocaleString()}</td>
-                <td>
-                  {item.exposedEvents > 0
-                    ? ((item.clickedEvents / item.exposedEvents) * 100).toFixed(1)
-                    : "0.0"}
-                  %
-                </td>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <table
+            style={{
+              width: "100%",
+              minWidth: 640,
+              borderCollapse: "collapse",
+              tableLayout: "fixed",
+              fontSize: 11,
+              lineHeight: 1.35,
+            }}
+          >
+            <colgroup>
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "48%" }} />
+              <col style={{ width: "10%" }} />
+              <col style={{ width: "11%" }} />
+              <col style={{ width: "11%" }} />
+            </colgroup>
+            <thead>
+              <tr style={{ background: "#f8fafc" }}>
+                <th
+                  style={{
+                    textAlign: "left",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#475569",
+                    padding: "8px 10px",
+                    borderBottom: "1px solid #e2e8f0",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Label
+                </th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#475569",
+                    padding: "8px 10px",
+                    borderBottom: "1px solid #e2e8f0",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  PATH
+                </th>
+                <th
+                  style={{
+                    textAlign: "right",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#475569",
+                    padding: "8px 10px",
+                    borderBottom: "1px solid #e2e8f0",
+                    whiteSpace: "nowrap",
+                    width: 72,
+                  }}
+                >
+                  노출
+                </th>
+                <th
+                  style={{
+                    textAlign: "right",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#475569",
+                    padding: "8px 10px",
+                    borderBottom: "1px solid #e2e8f0",
+                    whiteSpace: "nowrap",
+                    width: 72,
+                  }}
+                >
+                  클릭
+                </th>
+                <th
+                  style={{
+                    textAlign: "right",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#475569",
+                    padding: "8px 10px",
+                    borderBottom: "1px solid #e2e8f0",
+                    whiteSpace: "nowrap",
+                    width: 56,
+                  }}
+                >
+                  CTR
+                </th>
               </tr>
-            ))}
-            {filteredButtonEvents.length === 0 && (
-              <tr>
-                <td colSpan={5} style={{ color: "#777", paddingTop: 8 }}>
-                  선택한 날짜 범위·카테고리에 해당하는 버튼 데이터가 없습니다.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {buttonTableRows.map((item) => (
+                <tr key={`${item.label}-${item.path}`}>
+                  <td
+                    style={{
+                      padding: "7px 10px",
+                      borderBottom: "1px solid #f1f5f9",
+                      verticalAlign: "top",
+                      color: "#334155",
+                      wordBreak: "keep-all",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {item.label}
+                  </td>
+                  <td
+                    title={item.path}
+                    style={{
+                      padding: "7px 10px",
+                      borderBottom: "1px solid #f1f5f9",
+                      verticalAlign: "top",
+                      maxWidth: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      color: "#64748b",
+                      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                    }}
+                  >
+                    {item.path}
+                  </td>
+                  <td
+                    style={{
+                      padding: "7px 10px",
+                      borderBottom: "1px solid #f1f5f9",
+                      textAlign: "right",
+                      whiteSpace: "nowrap",
+                      verticalAlign: "top",
+                      color: "#334155",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {item.exposedEvents.toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      padding: "7px 10px",
+                      borderBottom: "1px solid #f1f5f9",
+                      textAlign: "right",
+                      whiteSpace: "nowrap",
+                      verticalAlign: "top",
+                      color: "#334155",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {item.clickedEvents.toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      padding: "7px 10px",
+                      borderBottom: "1px solid #f1f5f9",
+                      textAlign: "right",
+                      whiteSpace: "nowrap",
+                      verticalAlign: "top",
+                      color: "#334155",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {item.exposedEvents > 0
+                      ? `${((item.clickedEvents / item.exposedEvents) * 100).toFixed(1)}%`
+                      : "0.0%"}
+                  </td>
+                </tr>
+              ))}
+              {filteredButtonEvents.length === 0 && (
+                <tr>
+                  <td colSpan={5} style={{ color: "#777", padding: "12px 10px" }}>
+                    선택한 날짜 범위·카테고리에 해당하는 버튼 데이터가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       </>
       )}

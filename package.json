@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate-csv": "node scripts/generate-sample-csv.mjs"
+    "generate-csv": "node scripts/generate-sample-csv.mjs",
+    "sync-faq-buttons": "node scripts/sync-faq-exposure-buttons.mjs"
   },
   "dependencies": {
     "papaparse": "^5.5.3",

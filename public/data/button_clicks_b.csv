@@ -1,4 +1,4 @@
-date,label,path,eventCount
+﻿date,label,path,eventCount
 2026-03-13,요금안내서 재발행 바로가기,https://app-stg.tworld.co.kr/myt-fare/billsetup/reissue?from=aichat,1
 2026-03-13,납부 가능일 등록하기,UNPAID_REG_PAYMENT_DATE,5
 2026-03-13,친구찾기 자세히 보기,https://app-stg.tworld.co.kr/product/callplan?prod_id=NA00000468&from=aichat,1
@@ -32,8 +32,8 @@ date,label,path,eventCount
 2026-03-18,취소하기,CANCEL,1
 2026-03-18,무비와컬처 홈페이지 바로가기,https://www.movieculture.co.kr,2
 2026-03-18,약정 할인/기기할부정보 바로가기,https://app-stg.tworld.co.kr/myt-join/myplancombine/infodiscount?from=aichat,1
-2026-03-18,상담사 연결하기,02-6343-9000,2
-2026-03-19,상담사 연결하기,02-6343-9000,37
+2026-03-18,상담사 연결하기,************,2
+2026-03-19,상담사 연결하기,************,37
 2026-03-19,약정할인/기기 할부 정보 바로 가기,https://app-stg.tworld.co.kr/myt-join/myplancombine/infodiscount?from=aichat,1
 2026-03-19,공유 데이터 확인하기,REMAIN_DATA_SHARING,1
 2026-03-19,사용패턴 확인하기,https://app-stg.tworld.co.kr/myt-data/usage-pattern?from=aichat,1
@@ -47,7 +47,7 @@ date,label,path,eventCount
 2026-03-19,고객센터(114) 연결하기,114,5
 2026-03-19,T 지원금약정 안내,AG_T_SUBSIDY_INFO,1
 2026-03-19,T 지원금약정 자세히 보기,https://app-stg.tworld.co.kr/product/callplan?from=aichat&prod_id=TW20000015,1
-2026-03-20,상담사 연결하기,02-6343-9000,1
+2026-03-20,상담사 연결하기,************,1
 2026-03-20,주문 배송 정보 확인,https://m.shop.tworld.co.kr/my/submain,1
 2026-03-20,리필쿠폰 바로가기,https://app-stg.tworld.co.kr/myt-data/recharge/coupon?from=aichat,1
 2026-03-20,무비와컬처 홈페이지 바로가기,https://www.movieculture.co.kr,1
@@ -68,7 +68,7 @@ date,label,path,eventCount
 2026-03-23,나의 결합상품 확인하기,https://app-stg.tworld.co.kr/myt-join/combinations?from=aichat,2
 2026-03-23,나의 결합상품 바로가기,https://app-stg.tworld.co.kr/myt-join/combinations/?from=aichat,1
 2026-03-23,회선관리 바로가기,https://app-stg.tworld.co.kr/common/member/line?from=aichat,1
-2026-03-23,상담사 연결하기,02-6343-9000,6
+2026-03-23,상담사 연결하기,************,6
 2026-03-23,납부 가능일 등록하기,UNPAID_REG_PAYMENT_DATE,11
 2026-03-23,즉시 납부하기,https://app-stg.tworld.co.kr/myt-fare/unbill?from=aichat,2
 2026-03-23,나의 요금 바로가기,https://app-stg.tworld.co.kr/myt-fare/submain?from=aichat,1
